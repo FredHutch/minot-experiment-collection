@@ -1,0 +1,6 @@
+{
+    "SRR513378.5M": "tests/data/famli/SRR513378.5M.json.gz",
+    "SRR514196.5M": "tests/data/famli/SRR514196.5M.json.gz",
+    "SRR514265.5M": "tests/data/famli/SRR514265.5M.json.gz",
+    "SRR628279.5M": "tests/data/famli/SRR628279.5M.json.gz"
+}
