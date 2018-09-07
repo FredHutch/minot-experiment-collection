@@ -1,0 +1,5 @@
+Sample,File
+SRR513378.5M,s3://fh-pi-fredricks-d/lab/Sam_Minot/data/HMP_Subsample_2018/reads/SRR513378.5M.fastq.gz
+SRR514196.5M,s3://fh-pi-fredricks-d/lab/Sam_Minot/data/HMP_Subsample_2018/reads/SRR514196.5M.fastq.gz
+SRR514265.5M,s3://fh-pi-fredricks-d/lab/Sam_Minot/data/HMP_Subsample_2018/reads/SRR514265.5M.fastq.gz
+SRR628279.5M,s3://fh-pi-fredricks-d/lab/Sam_Minot/data/HMP_Subsample_2018/reads/SRR628279.5M.fastq.gz
