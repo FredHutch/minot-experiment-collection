@@ -1,5 +1,7 @@
 # Metagenomic (WGS) Experiment Collection
 
+[![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/experiment-collection/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/experiment-collection)
+
 Author: Samuel S. Minot, Ph.D.
 
 Make a single HDF5 with the complete set of data from a metagenomic (WGS) microbiome experiment
