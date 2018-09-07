@@ -4,6 +4,7 @@ Author: Samuel S. Minot, Ph.D.
 
 Make a single HDF5 with the complete set of data from a metagenomic (WGS) microbiome experiment
 
+```
 usage: make-experiment-collection.py [-h] --output-hdf5 OUTPUT_HDF5
                                      --output-logs OUTPUT_LOGS
                                      [--abundance-sample-sheet ABUNDANCE_SAMPLE_SHEET]
@@ -45,3 +46,4 @@ optional arguments:
                         assembly.
   --temp-folder TEMP_FOLDER
                         Folder for temporary files.
+```
