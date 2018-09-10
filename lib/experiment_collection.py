@@ -68,6 +68,30 @@ class ExperimentCollection:
         # Format as a DataFrame
         return pd.DataFrame(df)
 
+    @lru_cache(maxsize=1024)
+    def sample_gene_abundance(self, sample_id, metric=None):
+        """
+        
+        Return a DataFrame with the abundance for a single sample.
+
+        If `metric` is None, return the abundance key that was used in the input. 
+        Another option would be "clr".
+
+        """
+
+        # Set the metric to return
+        if metric is None:
+            metric = self.abund_id_key
+
+        # Read the abundance
+        abund = pd.read_hdf(self.exp_col_fp, "/abundance/" + sample_id)
+
+        for k in [self.gene_id_key, metric]:
+            assert k in abund.columns.values, "Column {} not found for {}".format(
+                k, sample_id)
+
+        return abund.set_index(self.gene_id_key)[metric]
+
     @lru_cache(maxsize=1)
     def metadata(self):
         """Return the metadata table."""
