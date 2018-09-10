@@ -80,18 +80,26 @@ class ExperimentCollection:
         assert annot_type in ["ko", "cluster"]
 
         if annot_type == "ko":
-
-            return pd.read_hdf(self.exp_col_fp, "eggnog_ko")
+            table_name = "eggnog_ko"
+            col_name = "ko"
 
         elif annot_type == "cluster":
+            table_name = "eggnog_cluster"
+            col_name = "eggnog_cluster"
 
-            return pd.read_hdf(self.exp_col_fp, "eggnog_cluster")
+        return pd.read_hdf(
+            self.exp_col_fp, 
+            table_name
+        ).set_index("gene")[col_name]
 
     @lru_cache(maxsize=1)
     def taxonomic_annotation(self):
         """Return the entire set of taxonomic annotations."""
 
-        return pd.read_hdf(self.exp_col_fp, "taxonomic_classification")
+        return pd.read_hdf(
+            self.exp_col_fp,
+            "taxonomic_classification"
+        ).set_index("gene")
 
     @lru_cache(maxsize=2)
     def cag_abundance(self, metric=None):
@@ -131,3 +139,21 @@ class ExperimentCollection:
 
         # Format as a DataFrame
         return pd.DataFrame(df)
+
+    @lru_cache(maxsize=1024)
+    def contigs_with_gene(self, gene_id):
+        """Get the list of contigs that contain a given gene."""
+        return pd.read_hdf(
+            self.exp_col_fp, 
+            "gene_positions", 
+            where="cluster == '{}'".format(gene_id)
+        )["seqname"].tolist()
+
+    @lru_cache(maxsize=1024)
+    def contig_df(self, contig_id):
+        """Get the summary of the structure of a contig."""
+        return pd.read_hdf(
+            self.exp_col_fp,
+            "gene_positions",
+            where="seqname == '{}'".format(contig_id)
+        )
