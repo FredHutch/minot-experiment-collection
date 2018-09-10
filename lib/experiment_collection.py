@@ -140,6 +140,16 @@ class ExperimentCollection:
         # Format as a DataFrame
         return pd.DataFrame(df)
 
+    @lru_cache(maxsize=1)
+    def cag_membership(self):
+        """Return a dict with the genes in each CAG."""
+        cags = pd.read_hdf(self.exp_col_fp, "cags")
+
+        return {
+            cag_id: cag_df["gene"].tolist()
+            for cag_id, cag_df in cags.groupby("cag")
+        }
+
     @lru_cache(maxsize=1024)
     def contigs_with_gene(self, gene_id):
         """Get the list of contigs that contain a given gene."""
