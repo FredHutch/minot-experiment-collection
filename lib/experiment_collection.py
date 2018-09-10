@@ -92,3 +92,42 @@ class ExperimentCollection:
         """Return the entire set of taxonomic annotations."""
 
         return pd.read_hdf(self.exp_col_fp, "taxonomic_classification")
+
+    @lru_cache(maxsize=2)
+    def cag_abundance(self, metric=None):
+        """
+        
+        Return a DataFrame with the abundance of CAGs for a set of samples.
+
+        If `metric` is None, return the abundance key that was used in the input. 
+        Another option would be "clr".
+
+        """
+
+        # Open a connection to the HDFStore
+        store = pd.HDFStore(self.exp_col_fp, mode="r")
+
+        # Set the metric to return
+        if metric is None:
+            metric = self.abund_id_key
+
+        # Store the data in a dict, keyed by sample
+        df = {}
+
+        # Iterate over the samples
+        for sample_id in self.all_samples:
+            # Read the abundance
+            abund = pd.read_hdf(store, "/cag_abundance/" + sample_id)
+            
+            for k in ["cag_id", metric]:
+                assert k in abund.columns.values, "Column {} not found for {}".format(
+                    k, sample_id)
+
+            # Add to the dict
+            df[sample_id] = abund.set_index("cag_id")[metric]
+
+        # Close the connection to the HDF5 file
+        store.close()
+
+        # Format as a DataFrame
+        return pd.DataFrame(df)
