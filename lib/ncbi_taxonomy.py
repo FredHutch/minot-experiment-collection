@@ -3,6 +3,7 @@
 import os
 from functools import lru_cache
 from collections import defaultdict
+import logging
 
 
 # NCBI TAXONOMY OBJECT
@@ -52,7 +53,7 @@ class NCBITaxonomy():
     def name(self, taxid):
         return self.tax.get(taxid, {}).get('scientific name')
 
-    def name(self, taxid):
+    def rank(self, taxid):
         return self.tax.get(taxid, {}).get('rank')
 
     def path_to_root(self, taxid):
