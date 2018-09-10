@@ -1,5 +1,6 @@
 """Class to help read data from the experiment collection."""
 
+from collections import defaultdict
 import os
 import pandas as pd
 
@@ -98,3 +99,9 @@ class ExperimentCollection:
         elif annot_type == "cluster":
 
             return pd.read_hdf(self.exp_col_fp, "eggnog_cluster")
+
+    @lru_cache(maxsize=1)
+    def taxonomic_annotation(self):
+        """Return the entire set of taxonomic annotations."""
+
+        return pd.read_hdf(self.exp_col_fp, "taxonomic_classification")
