@@ -68,7 +68,7 @@ class ExperimentCollection:
         # Format as a DataFrame
         return pd.DataFrame(df)
 
-    @lru_cache(maxsize=1024)
+    @lru_cache(maxsize=128)
     def sample_gene_abundance(self, sample_id, metric=None):
         """
         
@@ -91,6 +91,30 @@ class ExperimentCollection:
                 k, sample_id)
 
         return abund.set_index(self.gene_id_key)[metric]
+
+    @lru_cache(maxsize=128)
+    def sample_cag_abundance(self, sample_id, metric=None):
+        """
+        
+        Return a DataFrame with the abundance of CAGs for a single sample.
+
+        If `metric` is None, return the abundance key that was used in the input. 
+        Another option would be "clr".
+
+        """
+
+        # Set the metric to return
+        if metric is None:
+            metric = self.abund_id_key
+
+        # Read the abundance
+        abund = pd.read_hdf(self.exp_col_fp, "/cag_abundance/" + sample_id)
+
+        for k in ["cag_id", metric]:
+            assert k in abund.columns.values, "Column {} not found for {}".format(
+                k, sample_id)
+
+        return abund.set_index("cag_id")[metric]
 
     @lru_cache(maxsize=1)
     def metadata(self):
@@ -174,7 +198,7 @@ class ExperimentCollection:
             for cag_id, cag_df in cags.groupby("cag")
         }
 
-    @lru_cache(maxsize=1024)
+    @lru_cache(maxsize=128)
     def contigs_with_gene(self, gene_id):
         """Get the list of contigs that contain a given gene."""
         return pd.read_hdf(
@@ -183,7 +207,7 @@ class ExperimentCollection:
             where="cluster == '{}'".format(gene_id)
         )["seqname"].tolist()
 
-    @lru_cache(maxsize=1024)
+    @lru_cache(maxsize=128)
     def contig_df(self, contig_id):
         """Get the summary of the structure of a contig."""
         return pd.read_hdf(
