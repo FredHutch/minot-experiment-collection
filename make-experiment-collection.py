@@ -196,7 +196,7 @@ def make_experiment_collection(
         ))
         if remote_fp.startswith("s3://"):
             bucket, key = remote_fp[5:].split("/", 1)
-            s3.upload_file(local_fp, bucket, key)
+            s3.meta.client.upload_file(local_fp, bucket, key)
         else:
             shutil.copyfile(local_fp, remote_fp)
 
