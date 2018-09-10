@@ -80,6 +80,21 @@ class ExperimentCollection:
         # Format as a DataFrame
         return pd.DataFrame(df)
 
+    @lru_cache(maxsize=1)
     def metadata(self):
         """Return the metadata table."""
         return pd.read_hdf(self.exp_col_fp, "metadata")
+
+    @lru_cache(maxsize=2)
+    def eggnog_annotation(self, annot_type="ko"):
+        """Return the entire set of eggNOG annotations, 'ko' or 'cluster'."""
+
+        assert annot_type in ["ko", "cluster"]
+
+        if annot_type == "ko":
+
+            return pd.read_hdf(self.exp_col_fp, "eggnog_ko")
+
+        elif annot_type == "cluster":
+
+            return pd.read_hdf(self.exp_col_fp, "eggnog_cluster")
