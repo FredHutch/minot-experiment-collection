@@ -120,6 +120,9 @@ def add_table_to_store(
     logging.info("Reading in {}".format(metadata_table_fp))
     df = pd.read_table(metadata_table_fp, sep=sep, header=header, names=names, comment=comment)
 
+    # Replace the NaN values with "none" to prevent errors writing to HDF5
+    df.fillna("none", inplace=True)
+
     # Use each of the filter functions to write out a table to the store
     for table_name, filter_function in filter_function_dict.items():
         logging.info("Applying filter function for {}".format(table_name))
