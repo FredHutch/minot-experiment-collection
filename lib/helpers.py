@@ -12,6 +12,8 @@ import subprocess
 import sys
 import traceback
 
+from scipy.stats.mstats import gmean
+
 
 def repack_hdf5(fp, filter_string="GZIP=7"):
     """Repack an HDF5 file."""
@@ -211,15 +213,15 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
     if abundance_key != "clr":
         logging.info("Calculating the CLR")
 
-        # Get the median value
-        median_abundance = sample_dat[abundance_key].median()
+        # Get the geometric mean of the sample
+        sample_gmean = gmean(sample_dat[abundance_key])
 
         # Calculate the CLR
-        sample_dat["clr"] = (sample_dat[abundance_key] / median_abundance).apply(np.log10)
+        sample_dat["clr"] = (sample_dat[abundance_key] / sample_gmean).apply(np.log10)
 
     # Write to the HDF5
     logging.info("Writing {} to HDF5".format(sample_name))
-    sample_dat.to_hdf(store, "abundance/{}".format(sample_name), format="table", data_columns=[gene_id_key])
+    sample_dat.to_hdf(store, "abundance", format="table", data_columns=[gene_id_key], append=True)
 
     # If the CAGs are provided, make a summary of their abundance
     if cags is not None:
@@ -244,13 +246,13 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
         # Calculate the CLR
         if abundance_key != "clr":
             cag_df["clr"] = cag_df[abundance_key].apply(
-                lambda v: np.log10(v / median_abundance)
+                lambda v: np.log10(v / sample_gmean)
             )
 
         logging.info("Writing out the abundance for {:,} CAGs".format(
             cag_df.shape[0]
         ))
-        cag_df.to_hdf(store, "cag_abundance/{}".format(sample_name), format="table", data_columns=[gene_id_key])
+        cag_df.to_hdf(store, "cag_abundance", format="table", data_columns=[gene_id_key], append=True)
 
 
     logging.info("Done reading in abundance for {}".format(sample_name))
