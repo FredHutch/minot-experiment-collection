@@ -206,6 +206,9 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
         ]
     )
 
+    # Add the sample name
+    sample_dat["sample"] = sample_name
+
     logging.info("Sample {} contains {} genes".format(sample_name, sample_dat.shape[0]))
 
     # If the abundance isn't a CLR, calculate the CLR
@@ -221,7 +224,13 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
 
     # Write to the HDF5
     logging.info("Writing {} to HDF5".format(sample_name))
-    sample_dat.to_hdf(store, "abundance", format="table", data_columns=[gene_id_key], append=True)
+    sample_dat.to_hdf(
+        store,
+        "abundance",
+        format="table",
+        data_columns=[gene_id_key, "sample"],
+        append=True
+    )
 
     # If the CAGs are provided, make a summary of their abundance
     if cags is not None:
@@ -243,6 +252,9 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
         # Remove the CAGs that were not detected at all
         cag_df = cag_df.loc[cag_df[abundance_key] > 0]
 
+        # Add the sample name
+        cag_df["sample"] = sample_name
+
         # Calculate the CLR
         if abundance_key != "clr":
             cag_df["clr"] = cag_df[abundance_key].apply(
@@ -252,7 +264,13 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
         logging.info("Writing out the abundance for {:,} CAGs".format(
             cag_df.shape[0]
         ))
-        cag_df.to_hdf(store, "cag_abundance", format="table", data_columns=[gene_id_key], append=True)
+        cag_df.to_hdf(
+            store,
+            "cag_abundance",
+            format="table",
+            data_columns=["cag_id", "sample"],
+            append=True
+        )
 
 
     logging.info("Done reading in abundance for {}".format(sample_name))
