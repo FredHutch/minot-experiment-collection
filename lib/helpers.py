@@ -177,7 +177,7 @@ def add_cags_to_store(cags_json, store):
 
 
 def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
-                           results_key="results", abundance_key="depth", gene_id_key="id"):
+                           results_key="results", abundance_key="depth", other_keys=["length", "coverage", "nreads"], gene_id_key="id"):
     """Add the abundance data from a single abundance JSON to the store."""
     
     # Get the JSON for this particular sample
@@ -192,6 +192,9 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
 
     # Make sure that every element in the list has the indicated keys
     for d in sample_dat:
+        if other_keys is not None:
+            for k in other_keys:
+                assert k in d
         assert abundance_key in d
         assert gene_id_key in d
 
@@ -201,6 +204,10 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
             {
                 gene_id_key: d[gene_id_key],
                 abundance_key: float(d[abundance_key])
+                **{
+                    k: d[k]
+                    for k in other_keys
+                }
             }
             for d in sample_dat
         ]
@@ -214,13 +221,17 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
     # If the abundance isn't a CLR, calculate the CLR
 
     if abundance_key != "clr":
-        logging.info("Calculating the CLR")
+        # Make sure there are all positive values before trying to calculate the CLR
+        if sample_dat[abundance_key] <= 0:
+            logging.info("Cannot calculate the CLR with values <= 0")
+        else:
+            logging.info("Calculating the CLR")
 
-        # Get the geometric mean of the sample
-        sample_gmean = gmean(sample_dat[abundance_key])
+            # Get the geometric mean of the sample
+            sample_gmean = gmean(sample_dat[abundance_key])
 
-        # Calculate the CLR
-        sample_dat["clr"] = (sample_dat[abundance_key] / sample_gmean).apply(np.log10)
+            # Calculate the CLR
+            sample_dat["clr"] = (sample_dat[abundance_key] / sample_gmean).apply(np.log10)
 
     # Write to the HDF5
     logging.info("Writing {} to HDF5".format(sample_name))
