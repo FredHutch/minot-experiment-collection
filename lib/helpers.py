@@ -203,7 +203,7 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
         [
             {
                 gene_id_key: d[gene_id_key],
-                abundance_key: float(d[abundance_key])
+                abundance_key: float(d[abundance_key]),
                 **{
                     k: d[k]
                     for k in other_keys
