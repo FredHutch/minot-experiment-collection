@@ -222,7 +222,7 @@ def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
 
     if abundance_key != "clr":
         # Make sure there are all positive values before trying to calculate the CLR
-        if sample_dat[abundance_key] <= 0:
+        if (sample_dat[abundance_key] <= 0).any():
             logging.info("Cannot calculate the CLR with values <= 0")
         else:
             logging.info("Calculating the CLR")
