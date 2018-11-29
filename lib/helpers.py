@@ -176,8 +176,16 @@ def add_cags_to_store(cags_json, store):
     return cags
 
 
-def add_abundance_to_store(sample_name, sample_abundance_json_fp, store, cags,
-                           results_key="results", abundance_key="depth", other_keys=["length", "coverage", "nreads"], gene_id_key="id"):
+def add_abundance_to_store(
+    sample_name,
+    sample_abundance_json_fp,
+    store,
+    cags,
+    results_key="results",
+    abundance_key="depth",
+    other_keys=["length", "coverage", "nreads"], 
+    gene_id_key="id"
+):
     """Add the abundance data from a single abundance JSON to the store."""
     
     # Get the JSON for this particular sample
