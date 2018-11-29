@@ -117,7 +117,12 @@ def make_experiment_collection(
 
         logging.info("Adding sample abundance data to the collection")
 
-        for sample_name, sample_abundance_json_fp in abundance_sample_sheet.items():
+        # Sort the sample names by length
+        # By adding the longest sample name first, we will ensure that there is enough room in the table
+        for sample_name in sorted(list(abundance_sample_sheet.keys()), key=len)[::-1]:
+
+            sample_abundance_json_fp = abundance_sample_sheet[sample_name]
+
             for k in [".", "-"]:
                 sample_name = sample_name.replace(k, "_")
 
