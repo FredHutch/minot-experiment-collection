@@ -191,11 +191,16 @@ def add_abundance_to_store(
     # Get the JSON for this particular sample
     sample_dat = read_json(sample_abundance_json_fp)
 
-    # Make sure that the key for the results is in this file
-    assert results_key in sample_dat
+    # If this is a dict, check for the results key
+    if isinstance(sample_dat, dict):
 
-    # Subset down to the list of results
-    sample_dat = sample_dat[results_key]
+        # Make sure that the key for the results is in this file
+        assert results_key in sample_dat
+
+        # Subset down to the list of results
+        sample_dat = sample_dat[results_key]
+    
+    # Make sure that the data is a list
     assert isinstance(sample_dat, list)
 
     # Make sure that every element in the list has the indicated keys
@@ -345,8 +350,5 @@ def read_json(fp):
             dat = json.load(gzip.open(fp, "rt"))
         else:
             dat = json.load(open(fp, "rt"))
-
-    # Make sure that the sample sheet is a dictionary
-    assert isinstance(dat, dict)
 
     return dat
