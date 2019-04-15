@@ -7,7 +7,7 @@ RUN apt update && \
     awscli libcurl4-openssl-dev libhdf5-dev python-tables hdf5-tools
 
 RUN pip3 install pandas>=0.22.0 boto3>=1.7.2 feather-format \
-                 s3fs tables scipy joblib==0.13.2
+                 s3fs tables scipy joblib==0.13.2 sklearn
 
 # Add the script to the PATH
 ADD ./make-experiment-collection.py /usr/local/bin/
