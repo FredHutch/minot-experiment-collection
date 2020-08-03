@@ -8,7 +8,7 @@ RUN apt update && \
     awscli libcurl4-openssl-dev libhdf5-dev python3-tables hdf5-tools
 
 RUN pip3 install pandas>=0.22.0 boto3>=1.7.2 feather-format \
-                 s3fs tables scipy joblib==0.13.2 scikit-learn==0.19.1 \
+                 s3fs tables scipy joblib scikit-learn \
                  statsmodels zarr
 
 # Add the script to the PATH
