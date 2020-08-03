@@ -8,7 +8,7 @@ RUN apt update && \
 
 RUN pip3 install pandas>=0.22.0 boto3>=1.7.2 feather-format \
                  s3fs tables scipy joblib==0.13.2 scikit-learn==0.19.1 \
-                 statsmodels
+                 statsmodels zarr
 
 # Add the script to the PATH
 ADD ./make-experiment-collection.py /usr/local/bin/
